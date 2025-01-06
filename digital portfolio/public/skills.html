@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills - My Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="skills.html">My Skills</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="skills">
+    <h2>My Skills</h2>
+    <ul id="skills-list"></ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 My Portfolio</p>
+  </footer>
+
+  <button id="scrollToTopBtn" class="btn">↑ Back to Top</button>
+
+  <script>
+    initSqlJs({
+      locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${filename}`
+    }).then(function(SQL) {
+      const db = new SQL.Database();
+
+      db.run("CREATE TABLE IF NOT EXISTS skills (id INTEGER PRIMARY KEY, name TEXT, description TEXT)");
+
+      const skills = [
+        { name: "Data Analysis with Python", description: "Proficient in analyzing datasets using Python and libraries like pandas, numpy, and matplotlib." },
+        { name: "SQL & Database Management", description: "Experienced in designing and querying databases using SQLite and other database management systems." },
+        { name: "Data Visualization", description: "Skilled in creating interactive and static data visualizations using tools like Tableau and D3.js." },
+        { name: "Web Scraping", description: "Able to collect data from websites using web scraping techniques with Python and BeautifulSoup." },
+        { name: "Journalistic Investigations", description: "Specialized in using data and computational methods to conduct in-depth investigations and research." },
+        { name: "Machine Learning for Journalism", description: "Applying machine learning algorithms to analyze trends, classify content, or predict outcomes based on data sets relevant to journalism." },
+        { name: "Data Cleaning & Preprocessing", description: "Strong skills in cleaning and preparing raw data for analysis, addressing missing values, outliers, and inconsistencies." },
+        { name: "Natural Language Processing (NLP)", description: "Using NLP techniques to analyze text-based data, including sentiment analysis, keyword extraction, and topic modeling." },
+        { name: "Data-Driven Storytelling", description: "Combining data insights with narrative techniques to tell compelling, data-driven stories." },
+        { name: "HTML, CSS, and JavaScript", description: "Proficient in front-end web development, using HTML for structure, CSS for styling, and JavaScript for interactive features." }
+      ];
+
+      const stmt = db.prepare("INSERT INTO skills (name, description) VALUES (?, ?)");
+      skills.forEach(skill => {
+        stmt.run([skill.name, skill.description]);
+      });
+
+      function loadSkills() {
+        const skillsList = document.getElementById('skills-list');
+        const res = db.exec("SELECT * FROM skills");
+
+        console.log("Loaded skills:", res);
+
+        if (res.length > 0) {
+          res[0].values.forEach(skill => {
+            const li = document.createElement('li');
+            li.classList.add('skill-item');
+            li.innerHTML = `<h3>${skill[1]}</h3><p>${skill[2]}</p>`;
+            skillsList.appendChild(li);
+          });
+        } else {
+          const li = document.createElement('li');
+          li.classList.add('skill-item');
+          li.innerHTML = "<p>No skills found.</p>";
+          skillsList.appendChild(li);
+        }
+      }
+
+      loadSkills();
+    }).catch(function(error) {
+      console.error("Error initializing SQL.js:", error);
+    });
+  </script>
+
+</body>
+</html>

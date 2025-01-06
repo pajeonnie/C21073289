@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - My Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="skills.html">My Skills</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="projects">
+    <h2>My Projects</h2>
+    <ul id="projects-list"></ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 My Portfolio</p>
+  </footer>
+
+  <button id="scrollToTopBtn" class="btn">↑ Back to Top</button>
+
+  <script>
+    initSqlJs({
+      locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${filename}`
+    }).then(function(SQL) {
+      const db = new SQL.Database();
+  
+      db.run("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, title TEXT, content TEXT, url TEXT)");
+
+      const articles = [
+        { title: "The River News Liveblog: Hangover Cures", content: "Alcohol increases urination and can cause an excess loss of several fluids...", url: "https://riveronline.co.uk/hangover-cures/" },
+        { title: "The River Newspaper: What is it like living with bed bugs?", content: "Bedbugs are invading our personal and intimate spaces, says Zihen. It's in your bedroom, the one place where you go to relax your mind and body...", url: "https://online.fliphtml5.com/xyxev/xgjl/#p=2" },
+        { title: "The River Newspaper: International students celebrating Chinese New Year away from home", content: "February 10 marks Chinese New Year - a celebration of the beginning of a new year according to the traditional Chinese calendar...", url: "https://online.fliphtml5.com/xyxev/lqdo/#p=28" },
+        { title: "The River Newspaper: As the strike ends, here is what to expect from Hollywood", content: "The Screen Actors Guild-American Federation of Television and Radio Artists (SAG-AFTRA) have announced the end of their longest TV and movie actors' strike in history...", url: "https://online.fliphtml5.com/xyxev/vypw/#p=13" },
+        { title: "River News Instagram: What to watch in March", content: "As we approach the third month of the new year, here are our top picks for new movies coming out in March...", url: "https://www.instagram.com/p/C3qrFN9tcDr/?img_index=1" },
+        { title: "10 Things you can do at Kingston's Christmas Market", content: "As Christmas approaches, why not visit Kingston’s Christmas Market to enjoy and unwind with some Christmas festivities...", url: "https://www.instagram.com/p/C0RkGxXN0_i/?img_index=1" }
+      ];
+
+      const stmt = db.prepare("INSERT INTO articles (title, content, url) VALUES (?, ?, ?)");
+      articles.forEach(article => {
+        stmt.run([article.title, article.content, article.url]);
+      });
+
+      function loadArticles() {
+        const articlesList = document.getElementById('projects-list');
+        const res = db.exec("SELECT * FROM articles");
+
+        console.log("Loaded articles:", res);
+        if (res.length > 0) {
+          res[0].values.forEach(article => {
+            const li = document.createElement('li');
+            li.classList.add('project-item');
+            li.innerHTML = `
+              <h3>${article[1]}</h3>
+              <p>${article[2]}</p>
+              <a href="${article[3]}" target="_blank">Read more about this project</a>
+            `;
+            articlesList.appendChild(li);
+          });
+        } else {
+          const li = document.createElement('li');
+          li.classList.add('project-item');
+          li.innerHTML = "<p>No articles found.</p>";
+          articlesList.appendChild(li);
+        }
+      }
+
+      loadArticles();
+    }).catch(function(error) {
+      console.error("Error initializing SQL.js:", error);
+    });
+  </script>
+</body>
+</html>

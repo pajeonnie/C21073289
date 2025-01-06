@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/sql-wasm.js"></script>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="skills.html">My Skills</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>  
+
+  <section id="hero">
+    <h1>Kim's Digital Personal Portfolio</h1>
+    <p>I'm a passionate developer creating amazing projects!</p>
+    <a href="projects.html" class="btn">View My Work</a>
+  </section>
+
+  <section id="about">
+    <h2>About Me</h2>
+    <p>As a student with a unique blend of expertise in both journalism and computational studies, I have developed a versatile skill set that bridges storytelling with technical proficiency. My journalism background helps me gain a keen eye for detail, a strong understanding of narrative structure, and the ability to communicate complex ideas clearly and engagingly. With the journalistic skills I excel in researching, analyzing, and finding information from diverse sources, while maintaining a commitment to accuracy, ethical standards, and storytelling integrity. My computational skills, on the other hand, enables me to do things such as data analysis, coding, and learning techniques to approach journalistic tasks in innovative ways. With these set of skills, my use of computational tools helps me to uncover insights from large datasets or improve investigative reporting with advanced analytics. Whether it's building interactive data visualizations, developing algorithms for content personalization, or exploring new media formats, my dual expertise helps me push the boundaries of traditional journalism and engage with the growing industry of technology and storytelling. This combination of technical and creative capabilities makes me a forward-thinking and adaptable professional, ready to keep on moving in the evolving landscape of digital journalism.<p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 My Portfolio</p>
+  </footer>
+
+  <button id="scrollToTopBtn" class="btn">↑ Back to Top</button>
+
+  <script src="js/script.js"></script>
+
+  <script>
+    initSqlJs({
+      locateFile: filename => `https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/${filename}`
+    }).then(function(SQL) {
+      const db = new SQL.Database();
+      
+      db.run("CREATE TABLE IF NOT EXISTS skills (id INTEGER PRIMARY KEY, name TEXT, description TEXT)");
+      db.run("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, title TEXT, content TEXT)");
+
+      db.run("INSERT INTO skills (name, description) VALUES (?, ?)", ["JavaScript", "A versatile programming language."]);
+      db.run("INSERT INTO skills (name, description) VALUES (?, ?)", ["SQL", "Database management and querying language."]);
+      
+      db.run("INSERT INTO articles (title, content) VALUES (?, ?)", ["Portfolio Website", "Building a personal portfolio website using HTML, CSS, and JavaScript."]);
+      db.run("INSERT INTO articles (title, content) VALUES (?, ?)", ["Project Management", "Managing projects using efficient techniques."]);
+
+      function loadSkills() {
+        const skillsList = document.getElementById('skills-list');
+        const res = db.exec("SELECT * FROM skills");
+
+        res[0].values.forEach(skill => {
+          const li = document.createElement('li');
+          li.innerHTML = `<h3>${skill[1]}</h3><p>${skill[2]}</p>`;
+          skillsList.appendChild(li);
+        });
+      }
+
+      function loadArticles() {
+        const articlesList = document.getElementById('projects-list');
+        const res = db.exec("SELECT * FROM articles");
+
+        res[0].values.forEach(article => {
+          const li = document.createElement('li');
+          li.innerHTML = `<h3>${article[1]}</h3><p>${article[2]}</p>`;
+          articlesList.appendChild(li);
+        });
+      }
+
+      loadSkills();
+      loadArticles();
+    }).catch((error) => {
+      console.error('Error initializing SQL.js:', error);
+    });
+  </script>
+</body>
+</html>

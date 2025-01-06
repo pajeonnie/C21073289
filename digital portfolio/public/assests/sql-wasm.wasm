@@ -1,0 +1,8 @@
+<script>
+  initSqlJs({
+    locateFile: filename => `path/to/sql-wasm.wasm`
+  }).then(function(SQL) {
+    const db = new SQL.Database();
+    // Further database operations here
+  });
+</script>
