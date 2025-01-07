@@ -28,20 +28,19 @@
       <textarea id="message" placeholder="Your Message" required></textarea>
       <button type="submit">Send Message</button>
     </form>
-    <p id="form-status" aria-live="polite"></p> <!-- Improved accessibility -->
+    <p id="form-status" aria-live="polite"></p>
   </section>
 
   <footer>
     <p>&copy; 2025 My Portfolio</p>
   </footer>
 
-  <button id="scrollToTopBtn" class="btn" style="display: none;">↑ Back to Top</button> <!-- Hide by default -->
+  <button id="scrollToTopBtn" class="btn" style="display: none;">↑ Back to Top</button>
 
   <script src="js/script.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-      // Contact form submission logic
       const contactForm = document.getElementById('contact-form');
       const formStatus = document.getElementById('form-status');
 
@@ -62,7 +61,6 @@
         }
       });
 
-      // Scroll to top button functionality
       const scrollToTopBtn = document.getElementById('scrollToTopBtn');
       
       window.onscroll = () => {
@@ -80,7 +78,6 @@
         });
       });
 
-      // Initialize visibility of the scroll to top button on page load
       if (window.pageYOffset > 300) {
         scrollToTopBtn.style.display = 'block';
       }
@@ -89,4 +86,3 @@
 
 </body>
 </html>
-
